@@ -226,3 +226,20 @@ injected faults (`plan_invalid_once` + `tts_silent_always`) are recovered (plan)
 (`failed / narrating / TTS_FAILED`, 3 `tts_rejected` events). Fast suite: 54 passed.
 
 **Incomplete:** reviewer collaborator invites and the recording walkthrough (user).
+
+### CP11 — Repeatability check + timeout demo (2026-09-27)
+
+**Changed:** `scripts/check_repeatability.py` (compares two jobs via the public API: plan hash,
+sentence-by-sentence narration, per-sentence frame pixel diff, timing drift), `scripts/demo_timeout.sh`
+(server with a 25 s limit), worker logs when a timed-out job's thread stops.
+
+**Run:** `uv run python scripts/check_repeatability.py <job_a> <job_b>`, `scripts/demo_timeout.sh`
+
+**Results:** pH runs 13 min and 30 min apart: identical plan hash, identical 14/14 sentences, largest
+frame difference 0.45/255, timing drift ≤ 0.53 s → REPEATABLE. Timeout: job A → `failed / TIMEOUT` at
+its stage, download 409, `/health` answered in 4–23 ms throughout, job B started right after A failed,
+A's thread logged "abandoned … nothing published", 0 files published for A. (A macOS `sed` quirk
+briefly hid the demo output — not a product issue.)
+
+**Known limitation:** a timed-out thread finishes its current step before stopping (Python threads
+cannot be killed); production would run generation in a separate process/worker that can be terminated.

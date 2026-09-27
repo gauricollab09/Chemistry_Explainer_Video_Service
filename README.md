@@ -33,6 +33,8 @@ uv run uvicorn app.main:app --port 8000
 # interactive API docs: http://localhost:8000/docs
 scripts/demo.sh    # submits the 3 queries, polls, saves videos + captions into samples/
 scripts/demo_failures.sh   # ~30 s tour of every failure path (own server on :8001 with faults on)
+scripts/demo_timeout.sh    # a job exceeds a 25 s limit: TIMEOUT, nothing published, queue moves on (:8002)
+uv run python scripts/check_repeatability.py <job_a> <job_b>   # same query twice: text, plan, frames, timing
 ```
 
 Failure behaviour a client sees:

@@ -46,6 +46,8 @@ class StoreSink:
 
     def _check(self) -> None:
         if self.abandoned:
+            log.warning("job=%s abandoned after timeout; pipeline thread stopped at stage=%s, nothing published",
+                        self._job_id, self.current)
             raise JobAbandoned(self._job_id)
 
 
