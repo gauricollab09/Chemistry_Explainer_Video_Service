@@ -39,8 +39,8 @@ scripts/demo_timeout.sh                       # job over a 25 s limit → TIMEOU
 uv run python scripts/check_repeatability.py <job_a> <job_b>   # same query twice: plan, text, frames, timing
 ```
 
-A job takes roughly 1.5–3 minutes on an Intel MacBook (90–230 s measured; the top end was with other
-jobs competing for CPU). The first job after startup also loads the voice model (~8 s).
+A job takes about 1–4 minutes on an Intel MacBook (57 s measured on an idle machine, up to 230 s with
+other jobs competing for CPU). The first job after startup also loads the voice model (~8 s).
 
 Environment: `CHEMVID_DATA_DIR` (default `data/`), `CHEMVID_VOICE`, `CHEMVID_JOB_TIMEOUT_S`
 (default 600), `CHEMVID_FAULTS` (fault injection, see Tests).

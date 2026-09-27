@@ -148,7 +148,7 @@ All 10 real generation runs during development succeeded and passed QA.
 
 1. **No real LLM.** Production: an `LLMScriptProvider` returning JSON that passes the same plan gates,
    with the curated plan kept as fallback.
-2. **Rendering is CPU-bound** — 90–230 s per job on an Intel MacBook, mostly x264 encoding and frame
+2. **Rendering is CPU-bound** — 57–230 s per job on an Intel MacBook (57 s idle), mostly x264 encoding and frame
    piping. Production: render scenes in parallel / on dedicated render workers.
 3. **Timeouts cannot kill the thread.** Production: run generation in a separate process that can be
    terminated.
