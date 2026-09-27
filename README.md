@@ -12,7 +12,7 @@ passes content and output quality gates before it can be downloaded.
 
 Captions, plan hashes and repeatability results: [`samples/README.md`](samples/README.md).
 Design: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) (job lifecycle, persistence/artifact boundary,
-AI/video boundary, reliability, trade-offs) · [`docs/SPEC.md`](docs/SPEC.md) (agreed design) ·
+AI/video boundary, reliability, trade-offs; one-page visual version: open `docs/architecture.html` in a browser) · [`docs/SPEC.md`](docs/SPEC.md) (agreed design) ·
 [`PROGRESS.md`](PROGRESS.md) (build log: what changed, how it was verified, what was found).
 
 ## Setup

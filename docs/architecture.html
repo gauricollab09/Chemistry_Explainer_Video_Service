@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TaloTrace Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    color-scheme: dark;
+    --ground: #0b1224;
+    --surface: #131c32;
+    --surface-2: #1a2540;
+    --line: #28355a;
+    --ink: #e8eef7;
+    --muted: #93a1b8;
+    --amber: #facc15;
+    --sky: #38bdf8;
+    --good: #4ade80;
+    --bad: #f87171;
+    --boundary: #38bdf8;
+    --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --body: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      color-scheme: light;
+      --ground: #f4f6fa;
+      --surface: #ffffff;
+      --surface-2: #eaf0f8;
+      --line: #cdd6e4;
+      --ink: #0e1a2e;
+      --muted: #55627a;
+      --amber: #a16207;
+      --sky: #0369a1;
+      --good: #15803d;
+      --bad: #b91c1c;
+      --boundary: #0369a1;
+    }
+  }
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --ground: #f4f6fa;
+    --surface: #ffffff;
+    --surface-2: #eaf0f8;
+    --line: #cdd6e4;
+    --ink: #0e1a2e;
+    --muted: #55627a;
+    --amber: #a16207;
+    --sky: #0369a1;
+    --good: #15803d;
+    --bad: #b91c1c;
+    --boundary: #0369a1;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font: 400 15px/1.6 var(--body);
+    padding-inline: 20px;
+    padding-block: 40px 64px;
+  }
+  main { max-width: 1080px; margin: 0 auto; display: grid; gap: 56px; }
+  h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.15; }
+  h1 { font-size: clamp(30px, 5vw, 46px); font-weight: 800; letter-spacing: -0.01em; }
+  h2 { font-size: 24px; font-weight: 700; }
+  h3 { font-size: 16px; font-weight: 700; }
+  p { margin: 0; max-width: 68ch; }
+  code, .mono { font-family: var(--mono); font-size: 0.88em; }
+  .eyebrow { font: 500 12px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--sky); }
+  .muted { color: var(--muted); }
+  section { display: grid; gap: 18px; }
+  .section-head { display: grid; gap: 6px; }
+
+  /* header */
+  header { display: grid; gap: 16px; }
+  .ph-rule {
+    height: 6px; border-radius: 3px; max-width: 420px;
+    background: linear-gradient(90deg, #dc2626, #ef4444 14%, #f97316 28%, #facc15 43%, #22c55e 50%, #14b8a6 64%, #3b82f6 79%, #7e22ce);
+  }
+  .ph-caption { font: 400 11px/1 var(--mono); color: var(--muted); display: flex; justify-content: space-between; max-width: 420px; }
+  .facts { display: flex; flex-wrap: wrap; gap: 10px 28px; margin-top: 4px; }
+  .fact { display: grid; gap: 2px; }
+  .fact b { font: 700 22px/1.1 var(--display); font-variant-numeric: tabular-nums; }
+  .fact span { font-size: 12px; color: var(--muted); }
+
+  /* system diagram */
+  .scroll { overflow-x: auto; }
+  .system { min-width: 760px; display: grid; gap: 14px; padding: 20px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+  .row { display: grid; grid-template-columns: 150px 1fr; gap: 16px; align-items: center; }
+  .client { font: 500 13px/1.4 var(--mono); color: var(--muted); }
+  .box { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; background: var(--surface-2); display: grid; gap: 4px; }
+  .box h3 { font-size: 15px; }
+  .box .mono { color: var(--muted); font-size: 12px; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .boundary { border: 1.5px dashed var(--boundary); border-radius: 10px; padding: 14px; display: grid; gap: 10px; position: relative; }
+  .boundary-label { font: 500 11px/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--boundary); }
+  .flow { display: flex; align-items: stretch; gap: 8px; }
+  .flow .step { flex: 1; border: 1px solid var(--line); border-radius: 8px; padding: 10px; background: var(--surface-2); display: grid; gap: 3px; align-content: start; }
+  .flow .step b { font: 700 14px/1.2 var(--display); }
+  .flow .step span { font-size: 12px; color: var(--muted); }
+  .arrow { align-self: center; color: var(--muted); font: 500 16px/1 var(--mono); }
+  .down { text-align: center; color: var(--muted); font: 500 13px/1 var(--mono); }
+
+  /* lifecycle */
+  .lifecycle { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .chip { font: 500 13px/1 var(--mono); padding: 8px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); }
+  .chip.ok { border-color: var(--good); color: var(--good); }
+  .chip.fail { border-color: var(--bad); color: var(--bad); }
+  .chip.rej { border-color: var(--amber); color: var(--amber); }
+
+  /* tables */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 14px; }
+  th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+  th { font: 500 11px/1.3 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); background: var(--surface-2); }
+  tr:last-child td { border-bottom: 0; }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .pill { display: inline-block; font: 500 11px/1 var(--mono); padding: 4px 8px; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap; }
+  .pill.good { color: var(--good); }
+  .pill.bad { color: var(--bad); }
+
+  .principle { border-left: 3px solid var(--amber); padding: 10px 16px; background: var(--surface); border-radius: 0 8px 8px 0; font-weight: 500; }
+  .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .note { border: 1px solid var(--line); border-radius: 10px; padding: 16px; background: var(--surface); display: grid; gap: 8px; }
+  ol, ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+  footer { font-size: 13px; color: var(--muted); }
+
+  @media (max-width: 560px) {
+    body { padding-inline: 16px; }
+    main { gap: 44px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <span class="eyebrow">Backend architecture · FastAPI</span>
+    <h1>TaloTrace: chemistry explainer videos as reliable async jobs</h1>
+    <p class="muted">A learner asks one of three chemistry questions. The request becomes a job, the job runs a
+      pipeline where every stage is checked, and the finished video is published only after the final file
+      passes QA.</p>
+    <div>
+      <div class="ph-rule" aria-hidden="true"></div>
+      <div class="ph-caption" aria-hidden="true"><span>pH 0</span><span>7</span><span>14</span></div>
+    </div>
+    <div class="facts">
+      <div class="fact"><b>3</b><span>supported queries</span></div>
+      <div class="fact"><b>72–88 s</b><span>video length</span></div>
+      <div class="fact"><b>10 / 10</b><span>real runs passed QA</span></div>
+      <div class="fact"><b>≤ 0.47 / 255</b><span>frame difference on rerun</span></div>
+      <div class="fact"><b>54 + 5</b><span>fast + end-to-end tests</span></div>
+    </div>
+  </header>
+
+  <section aria-labelledby="blocks">
+    <div class="section-head">
+      <span class="eyebrow">1 · System blocks</span>
+      <h2 id="blocks">One process, three swappable boundaries</h2>
+    </div>
+    <div class="scroll">
+      <div class="system">
+        <div class="row">
+          <div class="client">client<br>curl · demo.sh · /docs</div>
+          <div class="box">
+            <h3>API layer</h3>
+            <span class="mono">POST /videos · GET /videos[/{id}] · /file · /captions · /topics · /health</span>
+            <span class="muted">Validates the query and resolves the topic before any job exists.</span>
+          </div>
+        </div>
+        <div class="row">
+          <div></div>
+          <div class="pair">
+            <div class="boundary">
+              <span class="boundary-label">Persistence boundary</span>
+              <div class="box"><h3>SQLiteJobStore</h3><span class="mono">jobs · job_events</span><span class="muted">Enforces legal status transitions.</span></div>
+            </div>
+            <div class="box" style="align-self:end">
+              <h3>Worker</h3>
+              <span class="mono">asyncio.Queue · 1 consumer · 600 s timeout</span>
+              <span class="muted">Runs the pipeline in a thread; maps errors to failed jobs.</span>
+            </div>
+          </div>
+        </div>
+        <div class="down" aria-hidden="true">▼ runner(job, sink) → PipelineResult | PipelineError</div>
+        <div class="boundary">
+          <span class="boundary-label">Generation boundary · app/generation</span>
+          <div class="flow">
+            <div class="step"><b>Plan</b><span>ScriptProvider<br>stub → LLM</span></div>
+            <span class="arrow" aria-hidden="true">→</span>
+            <div class="step"><b>Narrate</b><span>TTSProvider<br>Piper, per sentence</span></div>
+            <span class="arrow" aria-hidden="true">→</span>
+            <div class="step"><b>Render</b><span>9 Pillow scene renderers</span></div>
+            <span class="arrow" aria-hidden="true">→</span>
+            <div class="step"><b>Compose</b><span>ffmpeg mux</span></div>
+            <span class="arrow" aria-hidden="true">→</span>
+            <div class="step"><b>Verify</b><span>QA on the final MP4</span></div>
+          </div>
+        </div>
+        <div class="down" aria-hidden="true">▼ publish only if QA passes</div>
+        <div class="boundary">
+          <span class="boundary-label">Artifact boundary</span>
+          <div class="box"><h3>LocalArtifactStore</h3><span class="mono">work/&lt;id&gt;/ → published/.staging-&lt;id&gt;/ → rename → published/&lt;id&gt;/</span><span class="muted">Clients only ever see a complete set: video.mp4, captions.srt, plan.json, manifest.json.</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Boundary</th><th>Interface</th><th>Today</th><th>Production swap</th></tr></thead>
+        <tbody>
+          <tr><td>Persistence</td><td><code>SQLiteJobStore</code></td><td>SQLite file</td><td>Postgres, same methods</td></tr>
+          <tr><td>Artifacts</td><td><code>LocalArtifactStore</code></td><td>Local folders, publish by rename</td><td>S3 / GCS with signed URLs</td></tr>
+          <tr><td>Execution</td><td><code>Runner(job, sink)</code></td><td>In-process thread</td><td>Celery / Cloud Tasks worker process</td></tr>
+          <tr><td>AI: script</td><td><code>ScriptProvider</code></td><td>Curated plan, fault-injectable stub</td><td>LLM returning ScenePlan JSON</td></tr>
+          <tr><td>AI: voice</td><td><code>TTSProvider</code></td><td>Piper, en_US-lessac-medium</td><td>Any cloud TTS</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="lifecycle">
+    <div class="section-head">
+      <span class="eyebrow">2 · Job lifecycle</span>
+      <h2 id="lifecycle">Every job ends in one of two final states</h2>
+    </div>
+    <div class="lifecycle" role="list">
+      <span class="chip rej" role="listitem">query unsupported → 422, no job</span>
+    </div>
+    <div class="lifecycle" role="list" aria-label="Job stages in order">
+      <span class="chip" role="listitem">queued</span><span class="arrow">→</span>
+      <span class="chip" role="listitem">planning</span><span class="arrow">→</span>
+      <span class="chip" role="listitem">narrating</span><span class="arrow">→</span>
+      <span class="chip" role="listitem">rendering</span><span class="arrow">→</span>
+      <span class="chip" role="listitem">composing</span><span class="arrow">→</span>
+      <span class="chip" role="listitem">verifying</span><span class="arrow">→</span>
+      <span class="chip ok" role="listitem">succeeded</span>
+    </div>
+    <div class="lifecycle" role="list">
+      <span class="muted mono" style="font-size:13px">any stage, or a restart →</span>
+      <span class="chip fail" role="listitem">failed · error_code · error_stage · message</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Error code</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>PLAN_INVALID</code></td><td>Provider failed 3 attempts and the curated fallback plan also failed the checks</td></tr>
+          <tr><td><code>TTS_FAILED</code></td><td>A sentence came back empty, silent or at an implausible speed 3 times</td></tr>
+          <tr><td><code>RENDER_FAILED</code></td><td>Drawing code or the video encoder failed (no retry: it is deterministic)</td></tr>
+          <tr><td><code>COMPOSE_FAILED</code></td><td>ffmpeg could not combine video and narration after 2 attempts</td></tr>
+          <tr><td><code>QA_FAILED</code></td><td>The finished MP4 failed a check; nothing is published</td></tr>
+          <tr><td><code>TIMEOUT</code></td><td>The job exceeded its limit; the queue moves on and the thread stops at its next checkpoint</td></tr>
+          <tr><td><code>INTERRUPTED</code></td><td>The server restarted while the job was queued or running</td></tr>
+          <tr><td><code>INTERNAL</code></td><td>Unexpected exception; its message is recorded</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="gates">
+    <div class="section-head">
+      <span class="eyebrow">3 · Reliability</span>
+      <h2 id="gates">A check at every stage</h2>
+    </div>
+    <p class="principle">Retry what is non-deterministic. Never retry deterministic code. Verify the finished file before anyone can download it.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Stage</th><th>Check</th><th>On failure</th></tr></thead>
+        <tbody>
+          <tr><td>Planning</td><td>Schema; each scene's renderer accepts its steps and params; 3–40 words per sentence; 45–120 s estimate; required terms present</td><td>Retry ×2 → curated fallback plan → <code>PLAN_INVALID</code></td></tr>
+          <tr><td>Narrating</td><td>Per sentence: audio present, RMS ≥ 200, 1.5–6 words/s</td><td>Retry that sentence ×2 → <code>TTS_FAILED</code></td></tr>
+          <tr><td>Rendering</td><td>Deterministic code</td><td><code>RENDER_FAILED</code></td></tr>
+          <tr><td>Composing</td><td>ffmpeg exit code</td><td>Retry ×1 → <code>COMPOSE_FAILED</code></td></tr>
+          <tr><td>Verifying</td><td>H.264 1280×720 + AAC; duration within 0.5 s of the timeline; 5 sampled frames not blank; mean volume ≥ −40 dB</td><td><code>QA_FAILED</code>, never published</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="repeat">
+    <div class="section-head">
+      <span class="eyebrow">4 · Evidence</span>
+      <h2 id="repeat">Same question, same video</h2>
+      <p class="muted">A fresh run of each query compared with the committed sample by <code>scripts/check_repeatability.py</code>. Timing drift comes from Piper's sampled speech; the timeline follows the real audio, so voice and visuals stay in sync.</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Topic</th><th>Plan hash</th><th>Narration</th><th>Largest frame difference</th><th>Timing drift</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr><td>pH scale</td><td>identical</td><td class="num">14 / 14 sentences</td><td class="num">0.45 / 255</td><td class="num">≤ 0.53 s</td><td><span class="pill good">repeatable</span></td></tr>
+          <tr><td>Covalent bonds</td><td>identical</td><td class="num">14 / 14 sentences</td><td class="num">0.37 / 255</td><td class="num">≤ 0.64 s</td><td><span class="pill good">repeatable</span></td></tr>
+          <tr><td>Ionic vs covalent</td><td>identical</td><td class="num">17 / 17 sentences</td><td class="num">0.47 / 255</td><td class="num">≤ 0.53 s</td><td><span class="pill good">repeatable</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Failure case</th><th>What the client sees</th></tr></thead>
+        <tbody>
+          <tr><td>Question outside the 3 topics</td><td><span class="pill bad">422</span> learner-facing message plus the supported queries; no job created</td></tr>
+          <tr><td>Blank or 300+ character query</td><td><span class="pill bad">422</span> validation error</td></tr>
+          <tr><td>Download before the video is ready</td><td><span class="pill bad">409</span> VIDEO_NOT_READY with status and stage</td></tr>
+          <tr><td>Silent speech (fault injected)</td><td>Rejected 3 times → failed / narrating / TTS_FAILED, every attempt in the event log</td></tr>
+          <tr><td>Job over a 25 s limit</td><td>failed / TIMEOUT; /health answered in ~10 ms throughout; next job started at once; 0 files published</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="decisions">
+    <div class="section-head">
+      <span class="eyebrow">5 · Decisions</span>
+      <h2 id="decisions">What we chose and what it cost</h2>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Decision</th><th>Why</th><th>Trade-off</th></tr></thead>
+        <tbody>
+          <tr><td>Curated plans behind a stub ScriptProvider</td><td>Correct, repeatable content; the seam shows where an LLM plugs in</td><td>No live generation; checks proven with fault injection</td></tr>
+          <tr><td>One sentence drives one visual step</td><td>Narration and visuals always in sync</td><td>Less freedom for multi-sentence animations</td></tr>
+          <tr><td>Pillow + ffmpeg instead of Manim</td><td>Light install, deterministic, full control</td><td>Hand-built drawing pieces</td></tr>
+          <tr><td>Piper, offline</td><td>Natural voice, free, no network dependency</td><td>~8 s model load; ±0.5 s timing variation</td></tr>
+          <tr><td>SQLite behind an interface</td><td>Survives restarts</td><td>Single machine</td></tr>
+          <tr><td>In-process queue, one worker</td><td>Simple and observable, clear swap point</td><td>Jobs run one at a time</td></tr>
+          <tr><td>Fixed topics, keyword matching</td><td>Predictable; out-of-scope rejected before any work</td><td>Paraphrases need a pattern added</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="limits">
+    <div class="section-head">
+      <span class="eyebrow">6 · Limits and next steps</span>
+      <h2 id="limits">Known limitations and the production path</h2>
+    </div>
+    <div class="two">
+      <div class="note">
+        <h3>Limitations today</h3>
+        <ul>
+          <li>No real LLM calls.</li>
+          <li>Rendering is CPU-bound: 90–230 s per job on an Intel MacBook.</li>
+          <li>A timed-out thread stops at its next checkpoint, not immediately.</li>
+          <li>One worker, so jobs run one at a time.</li>
+          <li>QA checks structure, not whether a diagram is correct; frame reviews covered that by hand.</li>
+        </ul>
+      </div>
+      <div class="note">
+        <h3>Production path</h3>
+        <ul>
+          <li>An LLM provider whose JSON passes the same plan checks, with the curated plan as fallback.</li>
+          <li>Parallel or dedicated render workers.</li>
+          <li>Generation in a separate process that can be terminated.</li>
+          <li>A real queue with several workers, Postgres and object storage behind the existing interfaces.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note">
+      <h3>Adding a STEM topic</h3>
+      <p>Add one module with a <code>TopicSpec</code> (match patterns, required terms, reference plan) and register it. Reuse the existing scene kinds; a new visual is one renderer class. The API, worker, store and pipeline do not change.</p>
+    </div>
+  </section>
+
+  <footer>Source: github.com/gauricollab09/TaloTrace (private) · docs/ARCHITECTURE.md · measurements from PROGRESS.md, 27 Sep 2026.</footer>
+</main>
+</body>
+</html>
