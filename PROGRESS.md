@@ -243,3 +243,13 @@ briefly hid the demo output — not a product issue.)
 
 **Known limitation:** a timed-out thread finishes its current step before stopping (Python threads
 cannot be killed); production would run generation in a separate process/worker that can be terminated.
+
+**Full rerun of all 3 queries vs committed samples** (`check_repeatability.py`):
+
+| Topic | Plan hash | Narration | Largest frame diff | Duration drift | Result |
+|---|---|---|---|---|---|
+| ph_scale | identical | 14/14 identical | 0.45 / 255 | 0.53 s | REPEATABLE |
+| covalent_bonds | identical | 14/14 identical | 0.37 / 255 | 0.64 s max per sentence | REPEATABLE |
+| ionic_vs_covalent | identical | 17/17 identical | 0.47 / 255 | 0.53 s | REPEATABLE |
+
+All 10 real generation runs to date succeeded and passed QA.
