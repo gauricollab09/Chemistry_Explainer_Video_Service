@@ -11,7 +11,7 @@ Each checkpoint records: **what changed**, **how to run/test it**, **what the re
 - [x] CP3 — Job layer: models, SQLite JobStore, startup recovery (+ tests)
 - [x] CP4 — API + worker with a fake pipeline (+ tests)
 - [x] CP5 — Generation: ScenePlan, topic registry, stub provider, plan gates (+ tests)
-- [ ] CP6 — Narration: Piper TTS per segment with gates
+- [x] CP6 — Narration: Piper TTS per segment with gates
 - [ ] CP7 — Rendering primitives + core scenes for all 3 topics
 - [ ] CP8 — Compose + QA gate + atomic publish; end-to-end for all 3 queries
 - [ ] CP9 — Reliability: retries, fallback, fault injection, repeatability test
@@ -111,3 +111,19 @@ plan fails on duration + missing terms; one bad attempt recovers on retry; persi
 to the reference plan (`plan_source=fallback`); provider errors + broken fallback → `PLAN_INVALID`.
 
 **Incomplete:** renderer-specific `check()` (CP7) — tests currently use permissive checkers.
+
+### CP6 — Narration (2026-09-27)
+
+**Changed:** `app/generation/tts.py` (TTSProvider protocol, PiperTTS loaded once, FaultInjectingTTS
+with `tts_silent_once/always`, per-segment audio gate: non-empty, RMS ≥ 200, 1.5–6 words/s; retry ×2
+→ `TTS_FAILED`), `app/generation/timeline.py` (sample-accurate stitching with pauses, Cue timings,
+frame-aligned padding, SRT captions).
+
+**Run:** `uv run pytest tests/test_narration.py -v` (fake TTS), plus a real-Piper sweep over all 45
+segments (script in session log).
+
+**Results:** 5 passed. Real Piper: pH 69.0 s speech, covalent 63.7 s, ionic-vs-covalent 79.4 s; speech
+rate 2.35–3.83 words/s; **0 gate failures across 45 segments**. Silent segment → retried and recovered;
+always-silent → `TTS_FAILED` naming the segment. Cues are contiguous; audio length = frames / 30 exactly.
+
+**Incomplete:** rendering (CP7).
