@@ -14,7 +14,7 @@ from app.generation.render.style import H, W
 
 DURATION_TOLERANCE_S = 0.5
 MIN_FRAME_STD = 10.0       # a background-only frame measures ~3
-MIN_MEAN_VOLUME_DB = -40.0  # narration measures around -20 dB
+MIN_MEAN_VOLUME_DB = -40.0  # narration measures about -17 dB
 SAMPLE_POINTS = (0.15, 0.35, 0.55, 0.75, 0.9)
 
 

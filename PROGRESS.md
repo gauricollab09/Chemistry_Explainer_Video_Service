@@ -253,3 +253,15 @@ cannot be killed); production would run generation in a separate process/worker 
 | ionic_vs_covalent | identical | 17/17 identical | 0.47 / 255 | 0.53 s | REPEATABLE |
 
 All 10 real generation runs to date succeeded and passed QA.
+
+### CP12 — Documentation fact-check (2026-09-27)
+
+**Changed:** rewrote `docs/ARCHITECTURE.md` (system blocks, request flow, lifecycle incl. step-by-step
+timeout, gates table, atomic publish, video design, repeatability evidence, decisions/trade-offs,
+limitations + production path) and `README.md`; refreshed `samples/README.md`.
+
+**Verified against code and measurements:** video lengths 72.1/77.0/88.4 s (README said ~75 s); job
+time 90–230 s (said 2.5–3 min); fast suite 54 tests in 12–24 s (said ~15 s); onnxruntime 1.23.2 on
+Intel macOS vs 1.30.0 elsewhere (said "resolve normally"); drawn frames 20–24 % (said ~20 %); startup
+recovery covers queued *and* running jobs; QA comment −17 dB (said −20 dB); background-only frame std
+measured 2.79 (comment "~3" confirmed). Every file path referenced in the docs exists.
