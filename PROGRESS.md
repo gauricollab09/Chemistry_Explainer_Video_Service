@@ -13,7 +13,7 @@ Each checkpoint records: **what changed**, **how to run/test it**, **what the re
 - [x] CP5 — Generation: ScenePlan, topic registry, stub provider, plan gates (+ tests)
 - [x] CP6 — Narration: Piper TTS per segment with gates
 - [x] CP7 — Rendering primitives + core scenes for all 3 topics
-- [ ] CP8 — Compose + QA gate + atomic publish; end-to-end for all 3 queries
+- [x] CP8 — Compose + QA gate + atomic publish; end-to-end for all 3 queries
 - [ ] CP9 — Reliability: retries, fallback, fault injection, repeatability test
 - [ ] CP10 — README, architecture note, samples, demo script
 - [ ] Stretch — log-scale pH scene, energy curve, electronegativity spectrum
@@ -146,3 +146,26 @@ the stills found two layout bugs — the log-scale headline overlapped example c
 collided with two-line captions — both fixed.
 
 **Incomplete:** compose + QA + pipeline wiring verified end to end (CP8).
+
+### CP8 — Compose, QA gate, pipeline; first end-to-end run (2026-09-27)
+
+**Changed:** `compose.py` (ffmpeg mux, retry ×1, `compose_fail_once` fault), `qa.py` (ffprobe the final
+MP4: H.264 1280×720 + AAC, duration vs timeline ± 0.5 s, 5 sampled frames non-blank, audio not silent),
+`pipeline.py` (stages with timing events, manifest, atomic publish only after QA), paced animation for
+list-like steps (pH examples now appear as they are named), job timeout raised to 600 s,
+`scripts/demo.sh`, `scripts/setup.sh`, slow e2e tests, README + ARCHITECTURE.
+
+**Run:**
+```bash
+uv run uvicorn app.main:app --port 8000
+scripts/demo.sh            # or: curl -X POST localhost:8000/videos -d '{"query": "..."}'
+```
+
+**Results:** first real API run of "How does the pH scale work?" → `succeeded` in 168 s: planning 33 ms,
+narrating 23 s (69.9 s speech), rendering 136 s (2318 frames, only 449 drawn), composing 4 s,
+verifying 4 s; video 77.3 s, 2.1 MB, all QA checks passed. Contact sheet confirmed steps build in sync
+with captions. Observed: the 300 s timeout left < 2× headroom → raised to 600 s. Piper speech length
+varies slightly between runs (69.9 s vs 69.8 s) → repeatability test compares plan hash exactly and
+duration within tolerance.
+
+**Incomplete:** samples for all 3 queries (demo running), slow-suite run (CP9).

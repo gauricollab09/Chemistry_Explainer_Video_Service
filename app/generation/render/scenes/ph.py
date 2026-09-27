@@ -93,6 +93,7 @@ def _gradient_strip(width: int, height: int) -> tuple[Image.Image, Image.Image]:
 class PhScaleScene(SceneRenderer):
     kind = "ph_scale"
     actions = frozenset({"bar", "acidic", "neutral", "basic", "examples", "log"})
+    paced_actions = frozenset({"examples"})
 
     X0, X1, Y, BAR_H = 110, 1170, 330, 48
 

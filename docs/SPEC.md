@@ -125,7 +125,7 @@ QA passes. This is the initial policy; it will be revisited as real failures are
 | rendering | — (deterministic) | `RENDER_FAILED`, no retry |
 | composing | ffmpeg exit code | retry ×1 → `COMPOSE_FAILED` |
 | verifying | ffprobe: h264 + aac, 1280×720, duration = Σ segments ± 0.5 s; sampled frames non-blank; audio not silent | `QA_FAILED`, never published |
-| whole job | 5-minute timeout | `TIMEOUT` |
+| whole job | 10-minute timeout (`CHEMVID_JOB_TIMEOUT_S`) | `TIMEOUT` |
 
 Fault injection via `CHEMVID_FAULTS` (e.g. `plan_invalid_once`, `tts_silent_always`) exercises each path.
 

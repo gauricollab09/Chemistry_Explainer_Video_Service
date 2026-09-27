@@ -15,7 +15,7 @@ class Settings:
     data_dir: Path
     voice_model: Path
     faults: frozenset[str] = frozenset()
-    job_timeout_s: float = 300.0
+    job_timeout_s: float = 600.0
     pipeline_version: str = PIPELINE_VERSION
 
     @property
@@ -33,5 +33,5 @@ def load_settings() -> Settings:
         data_dir=Path(os.environ.get("CHEMVID_DATA_DIR", ROOT / "data")),
         voice_model=Path(os.environ.get("CHEMVID_VOICE", ROOT / "voices" / "en_US-lessac-medium.onnx")),
         faults=frozenset(f.strip() for f in faults.split(",") if f.strip()),
-        job_timeout_s=float(os.environ.get("CHEMVID_JOB_TIMEOUT_S", 300)),
+        job_timeout_s=float(os.environ.get("CHEMVID_JOB_TIMEOUT_S", 600)),
     )

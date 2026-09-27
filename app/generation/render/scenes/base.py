@@ -25,6 +25,8 @@ class Reveal:
 class SceneRenderer:
     kind: str = ""
     actions: frozenset[str] = frozenset()
+    # Steps that list several things animate across the whole sentence instead of the first second.
+    paced_actions: frozenset[str] = frozenset()
     show_heading = True
 
     def check(self, scene: Scene) -> list[str]:

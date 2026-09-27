@@ -81,7 +81,10 @@ def render_video(plan: ScenePlan, cues: list[Cue], total_frames: int, out_path: 
             cue = cues[cue_index]
             scene_cues = by_scene[cue.scene_index]
             scene_start, scene_end = scene_cues[0].start, scene_cues[-1].end
-            progress = ease((t - cue.start) / min(ANIMATION_S, max(0.3, cue.end - cue.start)))
+            renderer = RENDERERS[plan.scenes[cue.scene_index].kind]
+            speech = cue.speech_end - cue.start
+            span = speech * 0.9 if cue.show in renderer.paced_actions else min(ANIMATION_S, max(0.3, speech))
+            progress = ease((t - cue.start) / span)
             fade = clamp(min((t - scene_start) / SCENE_FADE_IN_S, (scene_end - t) / SCENE_FADE_OUT_S))
             caption_alpha = clamp((t - cue.start) / CAPTION_FADE_S)
             key = (cue_index, round(progress, 3), round(fade, 2), round(caption_alpha, 2))
