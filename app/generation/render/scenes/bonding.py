@@ -74,7 +74,7 @@ class CovalentShareScene(SceneRenderer):
         R, cx = self.R, 640
         d = lerp(lerp(620, 330, approach), 170, overlap)
         left, right = (cx - d / 2, CY), (cx + d / 2, CY)
-        alpha = clamp(approach * 3 + 0.001 if approach > 0 else 0)
+        alpha = clamp(rv("approach") * 4)  # fully visible early in the approach
         shell_color = lerp_color(MUTED, GOOD, result)
 
         if overlap > 0 and d < 2 * R:
@@ -183,12 +183,14 @@ class IonicTransferScene(SceneRenderer):
             (na, "Sodium (metal)", _electrons_word(1), "Positive ion", "lost 1 electron"),
             (cl, "Chlorine (non-metal)", _electrons_word(7), "Negative ion", "gained 1 electron · full shell"),
         )
+        # sequential cross-fade: old labels are gone before the new ones appear, so they never overlap
+        old_alpha, new_alpha = shown * clamp(1 - ions * 2), clamp(ions * 2 - 1)
         for c, name, detail, ion_name, ion_detail in labels:
             y = CY + self.R_CL + 42
-            text(f, (c[0], y), name, 26, TEXT, shown * (1 - ions), "mm", bold=True)
-            text(f, (c[0], y + 34), detail, 21, MUTED, shown * (1 - ions), "mm")
-            text(f, (c[0], y), ion_name, 26, TEXT, ions, "mm", bold=True)
-            text(f, (c[0], y + 34), ion_detail, 21, MUTED, ions, "mm")
+            text(f, (c[0], y), name, 26, TEXT, old_alpha, "mm", bold=True)
+            text(f, (c[0], y + 34), detail, 21, MUTED, old_alpha, "mm")
+            text(f, (c[0], y), ion_name, 26, TEXT, new_alpha, "mm", bold=True)
+            text(f, (c[0], y + 34), ion_detail, 21, MUTED, new_alpha, "mm")
 
         if attract > 0:
             mid = (na[0] + cl[0]) / 2
