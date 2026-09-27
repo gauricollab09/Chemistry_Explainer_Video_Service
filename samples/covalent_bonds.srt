@@ -1,0 +1,55 @@
+1
+00:00:00,000 --> 00:00:05,085
+Why do atoms form covalent bonds? It all comes down to electrons, and to stability.
+
+2
+00:00:06,035 --> 00:00:13,535
+An atom is most stable when its outer shell of electrons is full. Hydrogen has one electron, but its shell has room for two.
+
+3
+00:00:13,885 --> 00:00:17,194
+Chlorine has seven outer electrons, but its shell holds eight.
+
+4
+00:00:17,544 --> 00:00:21,805
+Each of these atoms is one electron short of a full, stable outer shell.
+
+5
+00:00:22,755 --> 00:00:26,935
+When two hydrogen atoms come close together, something useful can happen.
+
+6
+00:00:27,284 --> 00:00:31,696
+Their outer shells overlap, so electrons can be shared between both atoms.
+
+7
+00:00:32,046 --> 00:00:36,748
+The two electrons form a shared pair of electrons that sits between the two nuclei.
+
+8
+00:00:37,098 --> 00:00:42,659
+Now each hydrogen atom counts two electrons in its outer shell. That shared pair is a covalent bond.
+
+9
+00:00:43,609 --> 00:00:47,383
+Hydrogen gas is two hydrogen atoms joined by one shared pair.
+
+10
+00:00:47,733 --> 00:00:51,529
+In water, oxygen shares one pair with each of two hydrogen atoms.
+
+11
+00:00:51,879 --> 00:00:56,848
+And chlorine gas forms when two chlorine atoms share a pair, so both reach eight.
+
+12
+00:00:57,798 --> 00:01:01,664
+To recap: atoms are most stable when their outer shell is full.
+
+13
+00:01:02,014 --> 00:01:05,880
+Instead of giving electrons away, non-metal atoms can share them.
+
+14
+00:01:06,230 --> 00:01:11,165
+Each shared pair of electrons is a covalent bond, and it makes both atoms more stable.

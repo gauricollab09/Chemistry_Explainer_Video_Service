@@ -14,8 +14,8 @@ Each checkpoint records: **what changed**, **how to run/test it**, **what the re
 - [x] CP6 — Narration: Piper TTS per segment with gates
 - [x] CP7 — Rendering primitives + core scenes for all 3 topics
 - [x] CP8 — Compose + QA gate + atomic publish; end-to-end for all 3 queries
-- [ ] CP9 — Reliability: retries, fallback, fault injection, repeatability test
-- [ ] CP10 — README, architecture note, samples, demo script
+- [x] CP9 — Reliability: retries, fallback, fault injection, repeatability test
+- [x] CP10 — README, architecture note, samples, demo script
 - [ ] Stretch — log-scale pH scene, energy curve, electronegativity spectrum
 
 ---
@@ -185,3 +185,16 @@ download while narrating → 409 `VIDEO_NOT_READY`; faulted job → `plan_reject
 First attempt of the script broke on macOS system Python 3.9 (backslash in f-string) — fixed.
 
 **Incomplete:** slow suite run; samples commit; GitHub push.
+
+### CP10 — Samples, docs, GitHub (2026-09-27)
+
+**Changed:** final `samples/` (3 videos + captions + query/plan-hash table), README, ARCHITECTURE,
+private repo https://github.com/gauricollab09/TaloTrace (history intact).
+
+**Run:** `scripts/demo.sh` regenerates `samples/`.
+
+**Results:** 7 real runs so far, 7 succeeded, all QA-passed. Same query → same plan hash every time;
+duration spread ≤ 0.53 s per topic (Piper's sampled speech timing). Job time 100–156 s. Contact-sheet
+review of the final ionic video confirms the label fix.
+
+**Incomplete:** slow suite run; reviewers to be added as collaborators by the user.

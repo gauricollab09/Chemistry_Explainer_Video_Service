@@ -1,0 +1,55 @@
+1
+00:00:00,000 --> 00:00:04,644
+How does the pH scale work? Let's find out what that number really measures.
+
+2
+00:00:05,594 --> 00:00:12,281
+Every water-based solution contains some hydrogen ions. The pH scale measures how many hydrogen ions are present.
+
+3
+00:00:12,631 --> 00:00:17,577
+When a solution has lots of hydrogen ions, it is acidic, like lemon juice or vinegar.
+
+4
+00:00:17,927 --> 00:00:24,464
+When it has very few hydrogen ions, and more hydroxide ions instead, it is basic, like soap or bleach.
+
+5
+00:00:25,414 --> 00:00:28,293
+The pH scale runs from 0 to 14.
+
+6
+00:00:28,643 --> 00:00:32,764
+Anything below 7 is acidic. The lower the number, the stronger the acid.
+
+7
+00:00:33,114 --> 00:00:37,039
+Exactly 7 is neutral. Pure water sits right in the middle.
+
+8
+00:00:37,389 --> 00:00:41,638
+Anything above 7 is basic, and the higher the number, the stronger the base.
+
+9
+00:00:41,988 --> 00:00:47,828
+Lemon juice is about 2, coffee about 5, baking soda about 9, and bleach about 13.
+
+10
+00:00:48,178 --> 00:00:54,621
+Here is the surprising part: the scale is logarithmic. Each step down means ten times more hydrogen ions.
+
+11
+00:00:54,971 --> 00:01:00,730
+So a pH of 3 is ten times more acidic than 4, and a hundred times more acidic than 5.
+
+12
+00:01:01,680 --> 00:01:06,324
+To recap: pH measures the concentration of hydrogen ions in a solution.
+
+13
+00:01:06,674 --> 00:01:11,410
+Below 7 is acidic, exactly 7 is neutral, and above 7 is basic.
+
+14
+00:01:11,760 --> 00:01:15,986
+And because the scale is logarithmic, each step is a tenfold change.

@@ -1,0 +1,67 @@
+1
+00:00:00,000 --> 00:00:05,631
+What is the difference between ionic and covalent bonding? The answer is what happens to the electrons.
+
+2
+00:00:06,581 --> 00:00:10,819
+Sodium is a metal with one outer electron. Chlorine is a non-metal with seven.
+
+3
+00:00:11,168 --> 00:00:15,476
+In ionic bonding, sodium transfers its outer electron to chlorine.
+
+4
+00:00:15,826 --> 00:00:21,967
+Sodium becomes a positive ion, and chlorine becomes a negative ion. Both now have full outer shells.
+
+5
+00:00:22,317 --> 00:00:27,821
+Opposite charges attract. That electrostatic attraction between the ions is the ionic bond.
+
+6
+00:00:28,771 --> 00:00:34,030
+Now compare two chlorine atoms. Each needs one more electron, and neither will give one up.
+
+7
+00:00:34,380 --> 00:00:37,445
+So instead of a transfer, their outer shells overlap.
+
+8
+00:00:37,795 --> 00:00:40,070
+They share a pair of electrons between them.
+
+9
+00:00:40,420 --> 00:00:45,401
+Each chlorine atom now counts eight outer electrons. That shared pair is a covalent bond.
+
+10
+00:00:46,351 --> 00:00:47,965
+Let's put them side by side.
+
+11
+00:00:48,315 --> 00:00:53,400
+In ionic bonds, electrons are transferred. In covalent bonds, they are shared.
+
+12
+00:00:53,750 --> 00:00:59,555
+Ionic bonds usually form between a metal and a non-metal. Covalent bonds form between non-metals.
+
+13
+00:00:59,905 --> 00:01:06,070
+Ionic compounds are made of charged ions held by attraction. Covalent compounds are made of molecules.
+
+14
+00:01:06,420 --> 00:01:10,321
+Table salt is ionic, while water and chlorine gas are covalent.
+
+15
+00:01:11,271 --> 00:01:17,761
+To recap: in an ionic bond, electrons transfer from a metal to a non-metal, and the ions attract.
+
+16
+00:01:18,111 --> 00:01:22,406
+In a covalent bond, non-metal atoms share pairs of electrons.
+
+17
+00:01:22,756 --> 00:01:27,435
+Either way, the atoms end up with full outer shells, which makes them more stable.
