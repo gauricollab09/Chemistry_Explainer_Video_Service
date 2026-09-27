@@ -12,7 +12,7 @@ Each checkpoint records: **what changed**, **how to run/test it**, **what the re
 - [x] CP4 — API + worker with a fake pipeline (+ tests)
 - [x] CP5 — Generation: ScenePlan, topic registry, stub provider, plan gates (+ tests)
 - [x] CP6 — Narration: Piper TTS per segment with gates
-- [ ] CP7 — Rendering primitives + core scenes for all 3 topics
+- [x] CP7 — Rendering primitives + core scenes for all 3 topics
 - [ ] CP8 — Compose + QA gate + atomic publish; end-to-end for all 3 queries
 - [ ] CP9 — Reliability: retries, fallback, fault injection, repeatability test
 - [ ] CP10 — README, architecture note, samples, demo script
@@ -127,3 +127,22 @@ rate 2.35–3.83 words/s; **0 gate failures across 45 segments**. Silent segment
 always-silent → `TTS_FAILED` naming the segment. Cues are contiguous; audio length = frames / 30 exactly.
 
 **Incomplete:** rendering (CP7).
+
+### CP7 — Rendering (2026-09-27)
+
+**Changed:** `app/generation/render/` — `style.py` (palette, CPK atom colours, universal-indicator pH
+colours, fonts), `primitives.py` (2× supersampled shapes, easing, sub/superscript chemistry text,
+atoms with Lewis-style electron slots), 9 scene renderers (`title`, `bullets`, `ph_beaker`, `ph_scale`,
+`atom_shells`, `covalent_share`, `molecule_examples`, `ionic_transfer`, `comparison_table`) each with a
+`check()` used by the plan gate, `video.py` (frame loop → ffmpeg, redraws only when something changes,
+caption bar, scene fades, progress bar; `render_stills` preview).
+
+**Run:** `uv run python -m app.generation.render.video data/stills` (one PNG per scene), and
+`uv run pytest tests/test_render.py -v`
+
+**Results:** 54 tests pass overall. Real renderers accept all 3 reference plans and reject unknown steps,
+impossible atoms (5 electrons in hydrogen) and missing params (reported, not crashed). Visual review of
+the stills found two layout bugs — the log-scale headline overlapped example cards, beaker labels
+collided with two-line captions — both fixed.
+
+**Incomplete:** compose + QA + pipeline wiring verified end to end (CP8).
