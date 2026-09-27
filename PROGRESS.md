@@ -9,7 +9,7 @@ Each checkpoint records: **what changed**, **how to run/test it**, **what the re
 - [x] CP1 — Design spec approved and committed (`docs/SPEC.md`)
 - [x] CP2 — Implementation plan written (`docs/superpowers/plans/2026-09-27-chem-video-service.md`)
 - [x] CP3 — Job layer: models, SQLite JobStore, startup recovery (+ tests)
-- [ ] CP4 — API + worker with a fake pipeline (+ tests)
+- [x] CP4 — API + worker with a fake pipeline (+ tests)
 - [ ] CP5 — Generation: ScenePlan, topic registry, stub provider, plan gates (+ tests)
 - [ ] CP6 — Narration: Piper TTS per segment with gates
 - [ ] CP7 — Rendering primitives + core scenes for all 3 topics
@@ -76,3 +76,22 @@ message; terminal jobs reject further transitions; restart recovery fails only q
 (keeps the stage they died in); state survives reopening the DB file.
 
 **Incomplete:** nothing in the job layer; API + worker next (CP4).
+
+### CP4 — API + worker with a fake pipeline (2026-09-27)
+
+**Changed:** `app/generation/contracts.py` (PipelineResult / PipelineError / ProgressSink — the
+worker↔generation contract), `app/jobs/worker.py` (asyncio queue, runner in a thread, timeout,
+error → failed-job mapping, abandoned-thread guard), `app/artifacts/store.py` (workspace + atomic
+publish), `app/generation/topics/` (deterministic query → topic matching), `app/api/` (routes +
+schemas), `app/main.py` (`create_app(settings, runner)` wiring). Project renamed `talotrace`
+(GitHub repo will be `TaloTrace`).
+
+**Run:** `uv run pytest -v` (28 tests, ~12 s)
+
+**Results:** 28 passed. Submit → 202 → poll → succeeded → download works; `/file` is 409 while running
+and after failure; unsupported / empty / 301-char queries → 422 with no job created; PipelineError keeps
+its code + stage; unexpected exceptions → `INTERNAL`; a slow job → `TIMEOUT` and stays failed even when
+its thread wakes later; jobs orphaned by a restart → `INTERRUPTED`; messy casing/punctuation still
+resolves the topic.
+
+**Incomplete:** the real pipeline (plan → narrate → render → compose → verify) — CP5 onwards.
