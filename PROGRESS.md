@@ -10,7 +10,7 @@ Each checkpoint records: **what changed**, **how to run/test it**, **what the re
 - [x] CP2 — Implementation plan written (`docs/superpowers/plans/2026-09-27-chem-video-service.md`)
 - [x] CP3 — Job layer: models, SQLite JobStore, startup recovery (+ tests)
 - [x] CP4 — API + worker with a fake pipeline (+ tests)
-- [ ] CP5 — Generation: ScenePlan, topic registry, stub provider, plan gates (+ tests)
+- [x] CP5 — Generation: ScenePlan, topic registry, stub provider, plan gates (+ tests)
 - [ ] CP6 — Narration: Piper TTS per segment with gates
 - [ ] CP7 — Rendering primitives + core scenes for all 3 topics
 - [ ] CP8 — Compose + QA gate + atomic publish; end-to-end for all 3 queries
@@ -95,3 +95,19 @@ its thread wakes later; jobs orphaned by a restart → `INTERRUPTED`; messy casi
 resolves the topic.
 
 **Incomplete:** the real pipeline (plan → narrate → render → compose → verify) — CP5 onwards.
+
+### CP5 — Scene plans, stub provider, plan gates (2026-09-27)
+
+**Changed:** `app/generation/plan.py` (ScenePlan schema, `plan_hash`), `script_provider.py`
+(ScriptProvider protocol + deterministic StubScriptProvider with `plan_invalid_once/always` faults),
+`validate.py` (schema, renderer, 3–40 words/segment, 45–120 s estimate, required-terms gates; retry ×2
+then reference-plan fallback), curated narration for all 3 topics in `topics/chemistry/*.py`.
+
+**Run:** `uv run pytest tests/test_plan_gates.py -v`
+
+**Results:** 13 passed. All 3 reference plans pass every gate: pH 203 words / 14 segments / ~73 s,
+covalent 195 / 14 / ~71 s, ionic-vs-covalent 222 / 17 / ~81 s. Same query → same plan hash. A truncated
+plan fails on duration + missing terms; one bad attempt recovers on retry; persistent failure falls back
+to the reference plan (`plan_source=fallback`); provider errors + broken fallback → `PLAN_INVALID`.
+
+**Incomplete:** renderer-specific `check()` (CP7) — tests currently use permissive checkers.
