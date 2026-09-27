@@ -1,0 +1,12 @@
+[project]
+name = "chem-video-service"
+version = "0.1.0"
+description = "Backend prototype: async AI chemistry explainer video request service"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "piper-tts>=1.8.0",
+]
+
+[tool.uv]
+# This dev machine is an Intel Mac; newer onnxruntime (Piper's runtime) dropped x86_64 macOS wheels.
+required-environments = ["sys_platform == 'darwin' and platform_machine == 'x86_64'"]
