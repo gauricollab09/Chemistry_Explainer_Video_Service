@@ -7,8 +7,8 @@ Each checkpoint records: **what changed**, **how to run/test it**, **what the re
 
 - [x] CP0 — Environment: Python 3.12 venv, Piper + female voice, ffmpeg
 - [x] CP1 — Design spec approved and committed (`docs/SPEC.md`)
-- [ ] CP2 — Implementation plan written
-- [ ] CP3 — Job layer: models, SQLite JobStore, startup recovery (+ tests)
+- [x] CP2 — Implementation plan written (`docs/superpowers/plans/2026-09-27-chem-video-service.md`)
+- [x] CP3 — Job layer: models, SQLite JobStore, startup recovery (+ tests)
 - [ ] CP4 — API + worker with a fake pipeline (+ tests)
 - [ ] CP5 — Generation: ScenePlan, topic registry, stub provider, plan gates (+ tests)
 - [ ] CP6 — Narration: Piper TTS per segment with gates
@@ -52,3 +52,27 @@ design + storyboards, reliability gates, testing, deliverables. Git repo initial
 policy is explicitly provisional; revisit when real failures appear.
 
 **Incomplete:** user review of the written spec; then the implementation plan (CP2).
+
+### CP2 — Implementation plan (2026-09-27)
+
+**Changed:** condensed plan (8 tasks, interfaces, verification commands, review-focus edge cases);
+added FastAPI, Uvicorn, Pillow, NumPy, pytest, httpx; pytest skips `slow` tests by default.
+
+**Results:** "pH" pronounced correctly by Piper as written — no separate speech text needed. Voice load
+takes ~7.9 s, so it is loaded once per process; synthesis ~0.6–0.9 s per sentence.
+
+**Incomplete:** implementation (CP3+).
+
+### CP3 — Job layer (2026-09-27)
+
+**Changed:** `app/jobs/models.py` (JobStatus, Stage, ErrorCode, allowed transitions, Job/JobEvent),
+`app/jobs/store.py` (SQLite JobStore: create/get/list, stage transitions, succeed/fail, event log,
+startup recovery), `app/config.py` (env-driven settings incl. `CHEMVID_FAULTS`).
+
+**Run:** `uv run pytest tests/test_job_store.py -v`
+
+**Results:** 7 passed — happy-path lifecycle records 7 ordered events; failures keep code + stage +
+message; terminal jobs reject further transitions; restart recovery fails only queued/running jobs
+(keeps the stage they died in); state survives reopening the DB file.
+
+**Incomplete:** nothing in the job layer; API + worker next (CP4).
