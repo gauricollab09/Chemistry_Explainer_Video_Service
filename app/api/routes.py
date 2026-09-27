@@ -29,12 +29,17 @@ def request_video(body: VideoRequest, request: Request) -> JobSummary:
     services = _services(request)
     topic = services.registry.resolve(body.query)
     if topic is None:
+        supported = [t.canonical_query for t in services.registry.all()]
         raise HTTPException(
             422,
             detail={
                 "error": "UNSUPPORTED_TOPIC",
-                "message": "This query does not match a supported topic.",
-                "supported_queries": [t.canonical_query for t in services.registry.all()],
+                "message": (
+                    f"Sorry, we can't make a video for \"{body.query}\" yet. "
+                    f"Videos are currently available for {len(supported)} chemistry questions — try one of these."
+                ),
+                "query": body.query,
+                "supported_queries": supported,
             },
         )
     job = services.store.create(body.query, topic.id)

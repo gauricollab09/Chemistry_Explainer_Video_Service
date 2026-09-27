@@ -90,6 +90,7 @@ def test_unsupported_query_is_rejected_without_creating_a_job(tmp_path):
         detail = response.json()["detail"]
         assert detail["error"] == "UNSUPPORTED_TOPIC"
         assert len(detail["supported_queries"]) == 3
+        assert detail["query"] == "What is photosynthesis?" and "photosynthesis" in detail["message"]
         assert client.get("/videos").json() == []
 
 

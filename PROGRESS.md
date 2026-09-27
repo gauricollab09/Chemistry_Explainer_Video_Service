@@ -169,3 +169,19 @@ varies slightly between runs (69.9 s vs 69.8 s) → repeatability test compares 
 duration within tolerance.
 
 **Incomplete:** samples for all 3 queries (demo running), slow-suite run (CP9).
+
+### CP9a — Visible failure paths (2026-09-27)
+
+**Changed:** out-of-scope queries now get a learner-facing 422 message that echoes the query and lists
+the supported questions; `scripts/demo_failures.sh` (own server on :8001 with
+`plan_invalid_once,tts_silent_always`); README failure table; fixed overlapping Na/Cl labels found by
+reviewing video contact sheets.
+
+**Run:** `scripts/demo_failures.sh`
+
+**Results:** out-of-scope → 422 `UNSUPPORTED_TOPIC` (no job); blank query → 422; unknown id → 404;
+download while narrating → 409 `VIDEO_NOT_READY`; faulted job → `plan_rejected` then `plan_accepted`
+(recovered), then 3× `tts_rejected` (rms=0) → `failed / narrating / TTS_FAILED` with the segment named.
+First attempt of the script broke on macOS system Python 3.9 (backslash in f-string) — fixed.
+
+**Incomplete:** slow suite run; samples commit; GitHub push.

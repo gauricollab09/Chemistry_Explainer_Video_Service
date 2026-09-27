@@ -32,7 +32,18 @@ scripts/setup.sh   # uv sync + downloads the Piper voice (en_US-lessac-medium, ~
 uv run uvicorn app.main:app --port 8000
 # interactive API docs: http://localhost:8000/docs
 scripts/demo.sh    # submits the 3 queries, polls, saves videos + captions into samples/
+scripts/demo_failures.sh   # ~30 s tour of every failure path (own server on :8001 with faults on)
 ```
+
+Failure behaviour a client sees:
+
+| Situation | Response |
+|---|---|
+| Question outside the 3 supported topics | `422 UNSUPPORTED_TOPIC` with a learner-facing message and the supported queries; no job created |
+| Empty / >300-char query | `422` validation error |
+| Unknown job id | `404 NOT_FOUND` |
+| Download before the video is ready, or after failure | `409 VIDEO_NOT_READY` with current status/stage/error code |
+| Generation fails | job `failed` with `error_code`, `error_stage`, `error_message`, and the event log showing every retry |
 
 Environment variables: `CHEMVID_DATA_DIR` (default `data/`), `CHEMVID_VOICE`, `CHEMVID_JOB_TIMEOUT_S`
 (default 600), `CHEMVID_FAULTS` (comma-separated fault injection, see below).
