@@ -215,3 +215,14 @@ atomically; the demo client did not).
 
 **Fix:** download to `<file>.part`, then `mv` into place. Verified: re-downloading over a file held open
 gives a new inode, the open handle still reads the original intact, and no `.part` is left behind.
+
+### CP9 — Slow end-to-end suite (2026-09-27)
+
+**Run:** `uv run pytest -m slow -v`
+
+**Results:** 5 passed in 9 min 6 s — all 3 required queries produce QA-verified videos through the API
+with real Piper + ffmpeg; the same query twice gives an identical plan hash and consistent duration;
+injected faults (`plan_invalid_once` + `tts_silent_always`) are recovered (plan) and reported
+(`failed / narrating / TTS_FAILED`, 3 `tts_rejected` events). Fast suite: 54 passed.
+
+**Incomplete:** reviewer collaborator invites and the recording walkthrough (user).
