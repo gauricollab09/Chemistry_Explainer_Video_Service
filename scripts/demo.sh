@@ -14,6 +14,12 @@ QUERIES=(
 
 json() { python3 -c "import sys, json; d = json.load(sys.stdin); print($1)"; }
 
+# Download to a temp file, then rename into place: a player that already has the old file open keeps
+# a consistent copy instead of reading a file rewritten underneath it.
+download() {
+  curl -sf "$1" -o "$2.part" && mv -f "$2.part" "$2"
+}
+
 ids=()
 for q in "${QUERIES[@]}"; do
   id=$(curl -sf -X POST "$BASE/videos" -H 'content-type: application/json' \
@@ -31,8 +37,8 @@ for id in "${ids[@]}"; do
   done
   echo
   if [[ "$status" == succeeded ]]; then
-    curl -sf "$BASE/videos/$id/file" -o "$OUT/$topic.mp4"
-    curl -sf "$BASE/videos/$id/captions" -o "$OUT/$topic.srt"
+    download "$BASE/videos/$id/file" "$OUT/$topic.mp4"
+    download "$BASE/videos/$id/captions" "$OUT/$topic.srt"
     echo "  saved $OUT/$topic.mp4"
   else
     curl -sf "$BASE/videos/$id" | json 'd["error_code"], d["error_stage"], d["error_message"]'

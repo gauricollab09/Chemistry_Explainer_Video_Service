@@ -198,3 +198,20 @@ duration spread ≤ 0.53 s per topic (Piper's sampled speech timing). Job time 1
 review of the final ionic video confirms the label fix.
 
 **Incomplete:** slow suite run; reviewers to be added as collaborators by the user.
+
+### Bug — "ionic_vs_covalent.mp4 is blank, no narration" (2026-09-27)
+
+**Symptom:** user reported the ionic sample showed no visuals and no audio in QuickTime.
+
+**Investigation:** the file was valid — byte-identical to the QA-passed published artifact and to git
+(sha `215d958a…`), full decode of 2652 frames with 0 errors, audio −16.7 dB. `lsof` showed QuickTime
+holding it open. Timeline: user opened the *old* render at ~17:29:42; `demo.sh` overwrote the same
+inode in place with `curl -o` at 17:29:43; QuickTime's parsed index then pointed at rewritten bytes
+(black video, no sound), and later `open` calls only re-focused that stale window. A fresh copy at a
+new path played normally.
+
+**Root cause:** non-atomic client download in `scripts/demo.sh` (the server already publishes
+atomically; the demo client did not).
+
+**Fix:** download to `<file>.part`, then `mv` into place. Verified: re-downloading over a file held open
+gives a new inode, the open handle still reads the original intact, and no `.part` is left behind.
