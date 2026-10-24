@@ -83,8 +83,8 @@ message; terminal jobs reject further transitions; restart recovery fails only q
 worker↔generation contract), `app/jobs/worker.py` (asyncio queue, runner in a thread, timeout,
 error → failed-job mapping, abandoned-thread guard), `app/artifacts/store.py` (workspace + atomic
 publish), `app/generation/topics/` (deterministic query → topic matching), `app/api/` (routes +
-schemas), `app/main.py` (`create_app(settings, runner)` wiring). Project renamed `talotrace`
-(GitHub repo will be `TaloTrace`).
+schemas), `app/main.py` (`create_app(settings, runner)` wiring). Project renamed `chem-explainer-video-service`
+(GitHub repo `chem-explainer-video-service`).
 
 **Run:** `uv run pytest -v` (28 tests, ~12 s)
 
@@ -189,7 +189,7 @@ First attempt of the script broke on macOS system Python 3.9 (backslash in f-str
 ### CP10 — Samples, docs, GitHub (2026-09-27)
 
 **Changed:** final `samples/` (3 videos + captions + query/plan-hash table), README, ARCHITECTURE,
-private repo https://github.com/gauricollab09/TaloTrace (history intact).
+repo https://github.com/gauricollab09/chem-explainer-video-service (history intact).
 
 **Run:** `scripts/demo.sh` regenerates `samples/`.
 
@@ -225,7 +225,7 @@ with real Piper + ffmpeg; the same query twice gives an identical plan hash and 
 injected faults (`plan_invalid_once` + `tts_silent_always`) are recovered (plan) and reported
 (`failed / narrating / TTS_FAILED`, 3 `tts_rejected` events). Fast suite: 54 passed.
 
-**Incomplete:** reviewer collaborator invites and the recording walkthrough (user).
+**Incomplete:** recording walkthrough (user).
 
 ### CP11 — Repeatability check + timeout demo (2026-09-27)
 

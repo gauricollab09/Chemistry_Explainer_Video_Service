@@ -1,4 +1,4 @@
-# TaloTrace — AI Chemistry Explainer Video Service
+# Chemistry Explainer Video Service
 
 A FastAPI backend where a learner asks a chemistry question and gets back a 70–90-second narrated,
 animated explainer video. Requests run as asynchronous jobs with an explicit lifecycle, and every video
